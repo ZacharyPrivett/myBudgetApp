@@ -4,6 +4,10 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
+        MainFrame myFrame = new MainFrame();
+
+
+    /*
         String addExpense = "";
 
         Budget myBudget = Budget.getInstance();
@@ -39,6 +43,6 @@ public class Main {
             System.out.println(str);
         }
 
-
+    */
     }
 }
