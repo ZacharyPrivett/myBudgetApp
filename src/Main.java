@@ -4,8 +4,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        MainFrame myFrame = new MainFrame();
-
+        //MainFrame myFrame = new MainFrame();
+    BudgetDatabase data = new BudgetDatabase();
 
     /*
         String addExpense = "";
