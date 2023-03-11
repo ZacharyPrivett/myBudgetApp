@@ -29,8 +29,12 @@ public class Budget {
        currentBalance = monthlyBudget.subtract(monthlyPayments);
     }
 
-    public void setMonthlyBudget(BigDecimal userInputBudget) {
-        monthlyBudget = monthlyBudget.add(userInputBudget);
+    public void setMonthlyBudget(double userInputBudget) {
+        monthlyBudget = monthlyBudget.add(BigDecimal.valueOf(userInputBudget));
+        BudgetDatabase yes = new BudgetDatabase(monthlyBudget);
+        yes.createMonthlyBudgetDatabase();
+
+
     }
 
     public BigDecimal getMonthlyBudget() {
