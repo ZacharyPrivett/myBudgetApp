@@ -30,9 +30,10 @@ public class Budget {
     }
 
     public void setMonthlyBudget(double userInputBudget) {
-        monthlyBudget = monthlyBudget.add(BigDecimal.valueOf(userInputBudget));
+        monthlyBudget = new BigDecimal(userInputBudget);
+        //monthlyBudget = monthlyBudget.add(BigDecimal.valueOf(userInputBudget));
         BudgetDatabase yes = new BudgetDatabase(monthlyBudget);
-        yes.createMonthlyBudgetDatabase();
+        yes.writeMonthlyBudgetToFile();
 
 
     }

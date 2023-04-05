@@ -1,7 +1,7 @@
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
+
 
 
 public class BudgetDatabase {
@@ -30,12 +30,13 @@ public class BudgetDatabase {
     private static void loadMonthlyBudget() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("monthlyBudgetData.txt"));
         monthlyBudgetValue = reader.readLine();
+
         reader.close();
     }
 
     private static void loadExpenses() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("monthlyExpenseData.txt"));
-        monthlyExpenseList = new ArrayList<String>();
+        monthlyExpenseList = new ArrayList<>();
         String line = reader.readLine();
         while (line != null) {
             monthlyExpenseList.add(line);
@@ -44,17 +45,57 @@ public class BudgetDatabase {
         reader.close();
     }
 
-    /*
+    private static void loadPurchases() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("dailyPurchaseData.txt"));
+        dailyPurchaseList = new ArrayList<>();
+        String line = reader.readLine();
+        while(line != null) {
+            dailyPurchaseList.add(line);
+            line = reader.readLine();
+        }
+        reader.close();
+    }
 
-    BigDecimal currentBalance = new BigDecimal(0);
-    BigDecimal monthlyPayments = new BigDecimal(0);
-    ArrayList<String> expenseNameList = new ArrayList<String>();
-    ArrayList<Double> expensePriceList = new ArrayList<Double>();
+    public static void addMonthlyExpense(String monthlyExpense) throws IOException {
+        monthlyExpenseList.add(monthlyExpense);
+        writeMonthlyExpenseToFile();
+    }
 
-    static String mb;
-    */
+    public static void removeMonthlyExpense(String monthlyExpense) throws IOException {
+        monthlyExpenseList.remove(monthlyExpense);
+        writeMonthlyExpenseToFile();
+    }
 
-    public void createMonthlyBudgetDatabase() {
+    public static void addDailyPurchase(String dailyPurchase) throws IOException {
+        dailyPurchaseList.add(dailyPurchase);
+        writeDailyPurchaseToFile();
+    }
+
+    public static void removeDailyPurchase(String dailyPurchase) throws IOException {
+        dailyPurchaseList.remove(dailyPurchase);
+        writeDailyPurchaseToFile();
+    }
+
+    public static void writeMonthlyExpenseToFile() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("monthlyExpenseData.txt"));
+        for (int i = 0; i < monthlyExpenseList.size()-1; i++) {
+            writer.write(monthlyExpenseList.get(i) + "\n");
+
+        }
+        writer.close();
+
+    }
+
+    public static void writeDailyPurchaseToFile() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("dailyPurchaseData.txt"));
+        for (int i = 0; i < dailyPurchaseList.size()-1; i++) {
+            writer.write(dailyPurchaseList.get(i) + "\n");
+        }
+        writer.close();
+
+    }
+
+    public void writeMonthlyBudgetToFile() {
         BufferedWriter writer;
         try {
             writer = new BufferedWriter(new FileWriter("monthlyBudgetData.txt"));
@@ -62,6 +103,11 @@ public class BudgetDatabase {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        try {
+            loadMonthlyBudget();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }
