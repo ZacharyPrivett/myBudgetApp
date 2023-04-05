@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 
 public class MainFrame extends JFrame {
@@ -24,6 +25,7 @@ public class MainFrame extends JFrame {
         setContentPane(mainPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
+        displayMonthlyBudget.setText(BudgetDatabase.monthlyBudgetValue);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
@@ -35,6 +37,7 @@ public class MainFrame extends JFrame {
                     monthlyBudget = Double.parseDouble(JOptionPane.showInputDialog("What is your Monthly Budget?"));
                     Budget myBudget = Budget.getInstance();
                     myBudget.setMonthlyBudget(monthlyBudget);
+                    displayMonthlyBudget.setText(BudgetDatabase.monthlyBudgetValue);
                     System.out.println(monthlyBudget);
                 }
             }

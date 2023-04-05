@@ -1,11 +1,13 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
+        BudgetDatabase.loadDatabase();
         MainFrame myFrame = new MainFrame();
-        //BudgetDatabase data = new BudgetDatabase();
+        //BudgetDatabase data = new BudgetDatabase();main
 
     /*
         String addExpense = "";
@@ -19,7 +21,7 @@ public class Main {
         System.out.print("What is your monthly budget: $");
         myBudget.setMonthlyBudget(scan.nextBigDecimal());
 
-        System.out.print("how much do you spend a month on recuring payments: $");
+        System.out.print("how much do you spend a month on recurring payments: $");
         myBudget.setMonthlyPayments(scan.nextBigDecimal());
 
         do {
