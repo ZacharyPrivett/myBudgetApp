@@ -1,0 +1,3 @@
+phone|100
+gas|200
+water|25

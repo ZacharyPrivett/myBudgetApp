@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -8,7 +9,8 @@ public class Budget {
     BigDecimal monthlyBudget = new BigDecimal(0);
     BigDecimal currentBalance = new BigDecimal(0);
     BigDecimal monthlyPayments = new BigDecimal(0);
-    ArrayList<String> expenseList = new ArrayList<String>();
+    ArrayList<Entry> expenseList = new ArrayList<Entry>();
+    ArrayList<Entry> purchaseList = new ArrayList<Entry>();
 
     // constructor
     private Budget() {}
@@ -17,23 +19,50 @@ public class Budget {
         return single_instance;
     }
 
-    public void setExpenseList(String expense) {
+    public void addExpense(Entry expense) {
         expenseList.add(expense);
+        try {
+            BudgetDatabase.writeMonthlyExpenseToFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public ArrayList<String> getExpenseList() {
+    public void addPurchase(Entry purchase) {
+        purchaseList.add(purchase);
+        try {
+            BudgetDatabase.writeDailyPurchaseToFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<Entry> getExpenseList() {
         return expenseList;
+    }
+
+    public  ArrayList<Entry> getPurchaseList() {
+        return purchaseList;
     }
 
     public void calculateCurrentBalance() {
        currentBalance = monthlyBudget.subtract(monthlyPayments);
+       // = currentBalance.subtract();
+       //BudgetDatabase currValue = new BudgetDatabase();
     }
 
-    public void setMonthlyBudget(double userInputBudget) {
+
+    public void setMonthlyBudget(String userInputBudget) {
+
         monthlyBudget = new BigDecimal(userInputBudget);
-        //monthlyBudget = monthlyBudget.add(BigDecimal.valueOf(userInputBudget));
-        BudgetDatabase yes = new BudgetDatabase(monthlyBudget);
-        yes.writeMonthlyBudgetToFile();
+
+        BudgetDatabase.writeMonthlyBudgetToFile();
+
+        String str = monthlyBudget.toString();
+        System.out.println(str);
+
+
 
 
     }
@@ -54,8 +83,10 @@ public class Budget {
         return monthlyPayments;
     }
 
+
     public String toString() {
         return "Month " + monthlyBudget;
     }
+
 
 }
