@@ -1,23 +1,10 @@
 import java.io.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-
-
 
 public class BudgetDatabase {
 
-    BigDecimal monthlyBudget = new BigDecimal(0);
 
-    public static String monthlyBudgetValue;
-    // public static String currentBudgetBalance;
-    public static ArrayList<String> dailyPurchaseList;
-    public static ArrayList<String> monthlyExpenseList;
-
-
-    public BudgetDatabase(BigDecimal x) {
-        this.monthlyBudget = x;
-
-    }
+    private BudgetDatabase() {}
 
     public static void loadDatabase() throws IOException {
 
@@ -27,35 +14,51 @@ public class BudgetDatabase {
 
     }
 
-    private static void loadMonthlyBudget() throws IOException {
+    public static void loadMonthlyBudget() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("monthlyBudgetData.txt"));
-        monthlyBudgetValue = reader.readLine();
-
+        String monthlyBudgetValue = reader.readLine();
+        Budget.getInstance().setMonthlyBudget(monthlyBudgetValue);
         reader.close();
+        System.out.println("from load:" + monthlyBudgetValue + ":" );
     }
 
-    private static void loadExpenses() throws IOException {
+    public static void loadExpenses() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("monthlyExpenseData.txt"));
-        monthlyExpenseList = new ArrayList<>();
+
         String line = reader.readLine();
+
         while (line != null) {
-            monthlyExpenseList.add(line);
+            int pos = line.indexOf('|');
+            String name = line.substring(0,pos);
+            String value = line.substring(pos+1);
+            System.out.println("From expense load :" + value + ":");
+            Entry ent = new Entry(name, new BigDecimal(value));
+            Budget.getInstance().addExpense(ent);
             line = reader.readLine();
         }
         reader.close();
     }
 
-    private static void loadPurchases() throws IOException {
+    public static void loadPurchases() throws IOException {
+
         BufferedReader reader = new BufferedReader(new FileReader("dailyPurchaseData.txt"));
-        dailyPurchaseList = new ArrayList<>();
+
         String line = reader.readLine();
-        while(line != null) {
-            dailyPurchaseList.add(line);
+
+        while (line != null) {
+            System.out.println("line :" + line + ":");
+            int pos = line.indexOf('|');
+            String name = line.substring(0,pos);
+            String value = line.substring(pos+1);
+            System.out.println("from purchase load :" + value + ":");
+            Entry ent = new Entry(name, new BigDecimal(value));
+            Budget.getInstance().addPurchase(ent);
             line = reader.readLine();
         }
         reader.close();
     }
 
+    /*
     public static void addMonthlyExpense(String monthlyExpense) throws IOException {
         monthlyExpenseList.add(monthlyExpense);
         writeMonthlyExpenseToFile();
@@ -76,11 +79,13 @@ public class BudgetDatabase {
         writeDailyPurchaseToFile();
     }
 
-    public static void writeMonthlyExpenseToFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("monthlyExpenseData.txt"));
-        for (int i = 0; i < monthlyExpenseList.size()-1; i++) {
-            writer.write(monthlyExpenseList.get(i) + "\n");
+     */
 
+    public static void writeMonthlyExpenseToFile() throws IOException {
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("monthlyExpenseData.txt"));
+        for (Entry ent : Budget.getInstance().getExpenseList()) {
+            writer.write(ent.getName() + "|" + ent.getValue().toString() + "\n");
         }
         writer.close();
 
@@ -88,27 +93,32 @@ public class BudgetDatabase {
 
     public static void writeDailyPurchaseToFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("dailyPurchaseData.txt"));
-        for (int i = 0; i < dailyPurchaseList.size()-1; i++) {
-            writer.write(dailyPurchaseList.get(i) + "\n");
+
+        for (Entry ent : Budget.getInstance().getPurchaseList()) {
+            writer.write(ent.getName() + "|" + ent.getValue().toString() + "\n");
         }
+
         writer.close();
 
     }
 
-    public void writeMonthlyBudgetToFile() {
+    public static void writeMonthlyBudgetToFile() {
         BufferedWriter writer;
         try {
             writer = new BufferedWriter(new FileWriter("monthlyBudgetData.txt"));
-            writer.write(String.valueOf(monthlyBudget));
+            writer.write(Budget.getInstance().getMonthlyBudget().toString());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        /*
         try {
             loadMonthlyBudget();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+         */
 
     }
     /*

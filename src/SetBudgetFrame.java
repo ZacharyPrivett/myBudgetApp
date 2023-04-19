@@ -16,6 +16,7 @@ public class SetBudgetFrame extends JFrame {
         setSize(750, 500);
         setVisible(true);
 
+
         setMonthlyBudgetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
