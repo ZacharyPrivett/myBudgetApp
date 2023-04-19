@@ -1,3 +1,4 @@
 phone|100
 gas|200
 water|25
+purple juice|45
