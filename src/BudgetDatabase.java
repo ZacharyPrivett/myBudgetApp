@@ -46,7 +46,7 @@ public class BudgetDatabase {
         String line = reader.readLine();
 
         while (line != null) {
-            System.out.println("line :" + line + ":");
+            System.out.println("From load purchase. line :" + line + ":");
             int pos = line.indexOf('|');
             String name = line.substring(0,pos);
             String value = line.substring(pos+1);
@@ -57,29 +57,6 @@ public class BudgetDatabase {
         }
         reader.close();
     }
-
-    /*
-    public static void addMonthlyExpense(String monthlyExpense) throws IOException {
-        monthlyExpenseList.add(monthlyExpense);
-        writeMonthlyExpenseToFile();
-    }
-
-    public static void removeMonthlyExpense(String monthlyExpense) throws IOException {
-        monthlyExpenseList.remove(monthlyExpense);
-        writeMonthlyExpenseToFile();
-    }
-
-    public static void addDailyPurchase(String dailyPurchase) throws IOException {
-        dailyPurchaseList.add(dailyPurchase);
-        writeDailyPurchaseToFile();
-    }
-
-    public static void removeDailyPurchase(String dailyPurchase) throws IOException {
-        dailyPurchaseList.remove(dailyPurchase);
-        writeDailyPurchaseToFile();
-    }
-
-     */
 
     public static void writeMonthlyExpenseToFile() throws IOException {
 
@@ -111,26 +88,5 @@ public class BudgetDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*
-        try {
-            loadMonthlyBudget();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-         */
-
     }
-    /*
-    public void LoadDatabase () {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("monthlyBudgetData.txt"));
-            monthlyBudgetValue = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
-     */
 }

@@ -48,7 +48,7 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == monthlyExpenseButton) {
-                    new AddRemoveMonthlyExpenses(monthlyExpenseButton);
+                    new AddRemoveMonthlyExpenses(monthlyExpenseButton, expenseList);
                     monthlyExpenseButton.setEnabled(false);
                     //setVisible(false);
                 }
@@ -57,6 +57,14 @@ public class MainFrame extends JFrame {
         });
 
 
+        addPurchaseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == addPurchaseButton) {
+                    new PurchaseFrame();
+                }
+            }
+        });
     }
 
 
@@ -111,7 +119,7 @@ public class MainFrame extends JFrame {
         monthlyExpenseButton.setText("Add/Remove Monthly Expense");
         mainPanel.add(monthlyExpenseButton, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         addPurchaseButton = new JButton();
-        addPurchaseButton.setText("Add Purchase");
+        addPurchaseButton.setText("Add/Remove Purchase");
         mainPanel.add(addPurchaseButton, new com.intellij.uiDesigner.core.GridConstraints(3, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         currentBalanceLabel = new JLabel();
         currentBalanceLabel.setText("Current Balance:");

@@ -38,6 +38,24 @@ public class Budget {
         }
     }
 
+    public void removeExpense(String expense) {
+        int pos = expense.indexOf('$');
+        String name = expense.substring(0,pos-1);
+        for (Entry ent : expenseList) {
+            System.out.println("from removeExpense: " + name +" : " + ent.getName().toString());
+            if (name.equals(ent.getName().toString())) {
+                System.out.println("from remove expense: " + name +" : " + ent.getName().toString() + " TRUE");
+                expenseList.remove(ent);
+                break;
+            }
+        }
+        try {
+            BudgetDatabase.writeMonthlyExpenseToFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public ArrayList<Entry> getExpenseList() {
         return expenseList;
     }
@@ -61,9 +79,6 @@ public class Budget {
 
         String str = monthlyBudget.toString();
         System.out.println(str);
-
-
-
 
     }
 
