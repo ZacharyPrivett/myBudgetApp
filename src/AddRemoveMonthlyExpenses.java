@@ -19,12 +19,14 @@ public class AddRemoveMonthlyExpenses extends JFrame {
     private JList<String> list1;
     private JButton removeButton;
     private JButton returnButton;
+    private JLabel enterTitle;
+    private JLabel removeTitle;
     private JButton orig;
     private String selectedItem = "";
     private JList<String> mainExpenseList;
 
 
-    public AddRemoveMonthlyExpenses(JButton orig, JList mainExpenseList) {
+    public AddRemoveMonthlyExpenses(JButton orig, JList<String> mainExpenseList) {
 
         this.orig = orig;
         this.mainExpenseList = mainExpenseList;
@@ -32,23 +34,18 @@ public class AddRemoveMonthlyExpenses extends JFrame {
         setTitle("Budget Manager");
         setSize(750, 500);
         setVisible(true);
-
         loadList();
 
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == confirmButton) {
-
                     String expenseName = expenseField.getText();
                     String priceValue = priceField.getText();
-
                     Budget.getInstance().addExpense(new Entry(expenseName, new BigDecimal(priceValue)));
-
                     expenseField.setText("");
                     priceField.setText("");
                     loadList();
-
                 }
             }
         });
@@ -117,11 +114,11 @@ public class AddRemoveMonthlyExpenses extends JFrame {
     private void $$$setupUI$$$() {
         addPanel = new JPanel();
         addPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(5, 4, new Insets(0, 0, 0, 0), -1, -1));
-        final JLabel label1 = new JLabel();
-        label1.setHorizontalAlignment(0);
-        label1.setHorizontalTextPosition(0);
-        label1.setText("Enter the expense and the cost below");
-        addPanel.add(label1, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        enterTitle = new JLabel();
+        enterTitle.setHorizontalAlignment(0);
+        enterTitle.setHorizontalTextPosition(0);
+        enterTitle.setText("Enter the expense and the cost below");
+        addPanel.add(enterTitle, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         confirmButton = new JButton();
         confirmButton.setText("Enter Expense ");
         addPanel.add(confirmButton, new com.intellij.uiDesigner.core.GridConstraints(3, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -138,9 +135,9 @@ public class AddRemoveMonthlyExpenses extends JFrame {
         removePanel = new JPanel();
         removePanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         addPanel.add(removePanel, new com.intellij.uiDesigner.core.GridConstraints(4, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("To remove expense select one to remove then press the remove button");
-        removePanel.add(label2, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(374, 53), null, 0, false));
+        removeTitle = new JLabel();
+        removeTitle.setText("To remove expense select one to remove then press the remove button");
+        removePanel.add(removeTitle, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(374, 53), null, 0, false));
         removeButton = new JButton();
         removeButton.setText("Remove");
         removePanel.add(removeButton, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

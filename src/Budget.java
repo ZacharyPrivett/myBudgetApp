@@ -44,8 +44,26 @@ public class Budget {
         for (Entry ent : expenseList) {
             System.out.println("from removeExpense: " + name +" : " + ent.getName().toString());
             if (name.equals(ent.getName().toString())) {
-                System.out.println("from remove expense: " + name +" : " + ent.getName().toString() + " TRUE");
+                System.out.println("from removeExpense: " + name +" : " + ent.getName().toString() + " TRUE");
                 expenseList.remove(ent);
+                break;
+            }
+        }
+        try {
+            BudgetDatabase.writeMonthlyExpenseToFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removePurchase(String purchase) {
+        int pos = purchase.indexOf('$');
+        String name = purchase.substring(0,pos-1);
+        for (Entry ent : purchaseList) {
+            System.out.println("from removePurchase: " + name +" : " + ent.getName().toString());
+            if (name.equals(ent.getName().toString())) {
+                System.out.println("from removePurchase: " + name +" : " + ent.getName().toString() + " TRUE");
+                purchaseList.remove(ent);
                 break;
             }
         }
