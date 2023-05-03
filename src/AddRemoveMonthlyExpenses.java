@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.math.BigDecimal;
 
 public class AddRemoveMonthlyExpenses extends JFrame {
@@ -18,14 +17,17 @@ public class AddRemoveMonthlyExpenses extends JFrame {
     private JPanel addPanel;
     private JPanel removePanel;
     private JList<String> list1;
-    private JButton button1;
-    private JButton button2;
+    private JButton removeButton;
+    private JButton returnButton;
     private JButton orig;
+    private String selectedItem = "";
+    private JList<String> mainExpenseList;
 
 
-    public AddRemoveMonthlyExpenses(JButton orig) {
+    public AddRemoveMonthlyExpenses(JButton orig, JList mainExpenseList) {
 
         this.orig = orig;
+        this.mainExpenseList = mainExpenseList;
         setContentPane(addPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
@@ -54,7 +56,8 @@ public class AddRemoveMonthlyExpenses extends JFrame {
         list1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-
+                selectedItem = (String) list1.getSelectedValue();
+                System.out.println("From valueChanged :" + selectedItem);
             }
         });
 
@@ -65,15 +68,36 @@ public class AddRemoveMonthlyExpenses extends JFrame {
                 orig.setEnabled(true);
             }
         });
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == removeButton) {
+                    Budget.getInstance().removeExpense(selectedItem);
+                    loadList();
+                }
+            }
+        });
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == returnButton) {
+                    dispose();
+                    orig.setEnabled(true);
+                }
+            }
+        });
     }
 
     public void loadList() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
 
         for (Entry ent : Budget.getInstance().getExpenseList()) {
-            listModel.addElement(ent.getName() + ent.getValue());
+            listModel.addElement(ent.getName() + " $" + ent.getValue());
         }
         list1.setModel(listModel);
+        mainExpenseList.setModel(listModel);
+
+
     }
 
     {
@@ -117,12 +141,12 @@ public class AddRemoveMonthlyExpenses extends JFrame {
         final JLabel label2 = new JLabel();
         label2.setText("To remove expense select one to remove then press the remove button");
         removePanel.add(label2, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(374, 53), null, 0, false));
-        button1 = new JButton();
-        button1.setText("Button");
-        removePanel.add(button1, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        button2 = new JButton();
-        button2.setText("Button");
-        removePanel.add(button2, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        removeButton = new JButton();
+        removeButton.setText("Remove");
+        removePanel.add(removeButton, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        returnButton = new JButton();
+        returnButton.setText("Return");
+        removePanel.add(returnButton, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         list1 = new JList();
         removePanel.add(list1, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 2, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
