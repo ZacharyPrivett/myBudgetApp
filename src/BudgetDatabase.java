@@ -54,7 +54,7 @@ public class BudgetDatabase {
     }
 
     public static void writeMonthlyExpenseToFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("e:monthlyExpenseData.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("monthlyExpenseData.txt"));
         for (Entry ent : Budget.getInstance().getExpenseList()) {
             writer.write(ent.getName() + "|" + ent.getValue().toString() + "\n");
         }
@@ -63,7 +63,7 @@ public class BudgetDatabase {
     }
 
     public static void writeDailyPurchaseToFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("e:dailyPurchaseData.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("dailyPurchaseData.txt"));
         for (Entry ent : Budget.getInstance().getPurchaseList()) {
             writer.write(ent.getName() + "|" + ent.getValue().toString() + "\n");
         }
