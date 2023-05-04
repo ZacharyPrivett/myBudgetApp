@@ -1,3 +1,5 @@
-q|1
-r|4
-phone|148
+phone bill|85
+Vet|45
+water|15
+electric|87
+gas|55

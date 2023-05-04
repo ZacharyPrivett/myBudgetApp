@@ -5,7 +5,6 @@ public class Entry {
     private String name;
     private BigDecimal value;
 
-
     public Entry(String name, BigDecimal value) {
         this.name = name;
         this.value = value;
