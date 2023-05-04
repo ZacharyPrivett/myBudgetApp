@@ -3,30 +3,25 @@ import java.math.BigDecimal;
 
 public class BudgetDatabase {
 
-
     private BudgetDatabase() {}
 
     public static void loadDatabase() throws IOException {
-
         loadMonthlyBudget();
         loadExpenses();
         loadPurchases();
-
     }
 
     public static void loadMonthlyBudget() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("monthlyBudgetData.txt"));
         String monthlyBudgetValue = reader.readLine();
-        Budget.getInstance().setMonthlyBudget(monthlyBudgetValue);
+        Budget.getInstance().setMonthlyBudget(new BigDecimal(monthlyBudgetValue));
         reader.close();
         System.out.println("from load:" + monthlyBudgetValue + ":" );
     }
 
     public static void loadExpenses() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("monthlyExpenseData.txt"));
-
         String line = reader.readLine();
-
         while (line != null) {
             int pos = line.indexOf('|');
             String name = line.substring(0,pos);
@@ -59,8 +54,7 @@ public class BudgetDatabase {
     }
 
     public static void writeMonthlyExpenseToFile() throws IOException {
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter("monthlyExpenseData.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("e:monthlyExpenseData.txt"));
         for (Entry ent : Budget.getInstance().getExpenseList()) {
             writer.write(ent.getName() + "|" + ent.getValue().toString() + "\n");
         }
@@ -69,24 +63,18 @@ public class BudgetDatabase {
     }
 
     public static void writeDailyPurchaseToFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("dailyPurchaseData.txt"));
-
+        BufferedWriter writer = new BufferedWriter(new FileWriter("e:dailyPurchaseData.txt"));
         for (Entry ent : Budget.getInstance().getPurchaseList()) {
             writer.write(ent.getName() + "|" + ent.getValue().toString() + "\n");
         }
-
         writer.close();
-
     }
 
-    public static void writeMonthlyBudgetToFile() {
+    public static void writeMonthlyBudgetToFile() throws IOException {
         BufferedWriter writer;
-        try {
             writer = new BufferedWriter(new FileWriter("monthlyBudgetData.txt"));
             writer.write(Budget.getInstance().getMonthlyBudget().toString());
             writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 }

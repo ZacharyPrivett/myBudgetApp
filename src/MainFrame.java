@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.math.BigDecimal;
-
 
 public class MainFrame extends JFrame {
     private JPanel mainPanel;
@@ -24,74 +24,90 @@ public class MainFrame extends JFrame {
         setContentPane(mainPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
-        displayMonthlyBudget.setText(String.valueOf(Budget.getInstance().getMonthlyBudget()));
+        displayMonthlyBudget.setText("$" + String.valueOf(Budget.getInstance().getMonthlyBudget()));      // sets text to the value of the monthly budget
+        displayCurrentBalance.setText("$" + String.valueOf(Budget.getInstance().getCurrentBalance()));    // sets text to the value of the current balance
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
-        loadExpenseList();
-        loadPurchaseList();
+        loadExpenseList();      // calls method that populates JList with expense list values
+        loadPurchaseList();     // calls method that populates JList with purchase list values
 
         setBudgetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == setBudgetButton) {
-                    //SetBudgetFrame setBudgetFrame = new SetBudgetFrame();
+                    // Brings up window to enter a monthly budget
                     String monthlyBudget = JOptionPane.showInputDialog("What is your Monthly Budget?");
-                    Budget.getInstance().setMonthlyBudget(monthlyBudget);
-                    displayMonthlyBudget.setText(String.valueOf(Budget.getInstance().getMonthlyBudget()));
-                    //System.out.println(monthlyBudget);
+                    try {
+                        // Calls Budget class to set the monthly budget value
+                        Budget.getInstance().setMonthlyBudget(new BigDecimal(monthlyBudget));
+                        displayMonthlyBudget.setText("$" + String.valueOf(Budget.getInstance().getMonthlyBudget()));
+                        displayCurrentBalance.setText("$" + String.valueOf(Budget.getInstance().getCurrentBalance()));
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
                 }
             }
         });
-
 
         monthlyExpenseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == monthlyExpenseButton) {
-                    new AddRemoveMonthlyExpenses(monthlyExpenseButton, expenseList);
+                    // Creates expense frame
+                    new ExpenseFrame(monthlyExpenseButton, expenseList, displayCurrentBalance);
+                    // Disables monthlyExpenseButton
                     monthlyExpenseButton.setEnabled(false);
-                    //setVisible(false);
                 }
-
             }
         });
-
 
         addPurchaseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == addPurchaseButton) {
-                    new PurchaseFrame(addPurchaseButton, purchaseList);
+                    // Creates purchase frame
+                    new PurchaseFrame(addPurchaseButton, purchaseList, displayCurrentBalance);
+                    // Disables addPurchaseButton
                     addPurchaseButton.setEnabled(false);
+                }
+            }
+        });
+
+        newMonthButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == newMonthButton) {
+                    try {
+                        Budget.getInstance().newMonth();    // Calls newMonth method from Budget Class
+                        loadPurchaseList();
+                        displayCurrentBalance.setText("$" + String.valueOf(Budget.getInstance().getCurrentBalance()));
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
                 }
             }
         });
     }
 
-
     public void loadExpenseList() {
-
+        // Creates new list model
         DefaultListModel<String> listModel = new DefaultListModel<>();
-
+        // populates list model with elements from expense list
         for (Entry ent : Budget.getInstance().getExpenseList()) {
-            listModel.addElement(ent.getName() + ent.getValue());
+            listModel.addElement(ent.getName() + " $" + ent.getValue());
         }
         expenseList.setModel(listModel);
     }
 
     public void loadPurchaseList() {
-
+        // Creates new list model
         DefaultListModel<String> listModel = new DefaultListModel<>();
-
+        // populates list model with elements from purchase list
         for (Entry ent : Budget.getInstance().getPurchaseList()) {
-            listModel.addElement(ent.getName() + ent.getValue());
+            listModel.addElement(ent.getName() + " $" + ent.getValue());
         }
         purchaseList.setModel(listModel);
-    }
-
-    public void updateWhenClosed() {
-        monthlyExpenseButton.setEnabled(true);
     }
 
 

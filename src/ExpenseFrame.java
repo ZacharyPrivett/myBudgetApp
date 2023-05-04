@@ -6,9 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.math.BigDecimal;
 
-public class AddRemoveMonthlyExpenses extends JFrame {
+public class ExpenseFrame extends JFrame {
     private JButton confirmButton;
     private JTextField expenseField;
     private JTextField priceField;
@@ -24,12 +25,13 @@ public class AddRemoveMonthlyExpenses extends JFrame {
     private JButton orig;
     private String selectedItem = "";
     private JList<String> mainExpenseList;
+    private JLabel balanceLabel;
 
-
-    public AddRemoveMonthlyExpenses(JButton orig, JList<String> mainExpenseList) {
+    public ExpenseFrame(JButton orig, JList<String> mainExpenseList, JLabel balanceLabel) {
 
         this.orig = orig;
         this.mainExpenseList = mainExpenseList;
+        this.balanceLabel = balanceLabel;
         setContentPane(addPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
@@ -40,12 +42,20 @@ public class AddRemoveMonthlyExpenses extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == confirmButton) {
+                    // Grabs values from text fields
                     String expenseName = expenseField.getText();
                     String priceValue = priceField.getText();
-                    Budget.getInstance().addExpense(new Entry(expenseName, new BigDecimal(priceValue)));
-                    expenseField.setText("");
-                    priceField.setText("");
-                    loadList();
+                    try {
+                        // Creates new Entry and adds it to expense list
+                        Budget.getInstance().addExpense(new Entry(expenseName, new BigDecimal(priceValue)));
+                        // Sets texts fields back to empty text fields
+                        expenseField.setText("");
+                        priceField.setText("");
+                        // Populates the JList with newly added or removed values
+                        loadList();
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
                 }
             }
         });
@@ -53,7 +63,7 @@ public class AddRemoveMonthlyExpenses extends JFrame {
         list1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                selectedItem = (String) list1.getSelectedValue();
+                selectedItem = list1.getSelectedValue();
                 System.out.println("From valueChanged :" + selectedItem);
             }
         });
@@ -61,25 +71,33 @@ public class AddRemoveMonthlyExpenses extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                orig.setEnabled(true);
+                super.windowClosing(e);     // tracks window closing
+                orig.setEnabled(true);      // enables monthly expense button in MainFrame when window closes
+                updateBalance();            // updates current balance in MainFrame
             }
         });
+
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == removeButton) {
-                    Budget.getInstance().removeExpense(selectedItem);
-                    loadList();
+                    try {
+                        Budget.getInstance().removeExpense(selectedItem);
+                        loadList();
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
                 }
             }
         });
+
         returnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == returnButton) {
-                    dispose();
-                    orig.setEnabled(true);
+                    dispose();              // closes window
+                    orig.setEnabled(true);  // enables monthly expense button in MainFrame when window closes
+                    updateBalance();        // updates current balance in MainFrame
                 }
             }
         });
@@ -87,14 +105,16 @@ public class AddRemoveMonthlyExpenses extends JFrame {
 
     public void loadList() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
-
+        // populates JList with expense list elements
         for (Entry ent : Budget.getInstance().getExpenseList()) {
             listModel.addElement(ent.getName() + " $" + ent.getValue());
         }
-        list1.setModel(listModel);
-        mainExpenseList.setModel(listModel);
+        list1.setModel(listModel);              // sets JList on this window with expense list
+        mainExpenseList.setModel(listModel);    // sets expense JList in MainFrame
+    }
 
-
+    public void updateBalance() {
+        balanceLabel.setText(String.valueOf(Budget.getInstance().getCurrentBalance()));
     }
 
     {
