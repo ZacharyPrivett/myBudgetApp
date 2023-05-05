@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.math.BigDecimal;
 
 public class MainFrame extends JFrame {
@@ -24,72 +21,63 @@ public class MainFrame extends JFrame {
         setContentPane(mainPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
-        displayMonthlyBudget.setText("$" + String.valueOf(Budget.getInstance().getMonthlyBudget()));      // sets text to the value of the monthly budget
-        displayCurrentBalance.setText("$" + String.valueOf(Budget.getInstance().getCurrentBalance()));    // sets text to the value of the current balance
+        displayMonthlyBudget.setText("$" + Budget.getInstance().getMonthlyBudget());      // sets text to the value of the monthly budget
+        displayCurrentBalance.setText("$" + Budget.getInstance().getCurrentBalance());    // sets text to the value of the current balance
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
         loadExpenseList();      // calls method that populates JList with expense list values
         loadPurchaseList();     // calls method that populates JList with purchase list values
 
-        setBudgetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == setBudgetButton) {
-                    // Brings up window to enter a monthly budget
-                    String monthlyBudget = JOptionPane.showInputDialog("What is your Monthly Budget?");
-                    try {
-                        // Calls Budget class to set the monthly budget value
-                        Budget.getInstance().setMonthlyBudget(new BigDecimal(monthlyBudget));
-                        displayMonthlyBudget.setText("$" + String.valueOf(Budget.getInstance().getMonthlyBudget()));
-                        displayCurrentBalance.setText("$" + String.valueOf(Budget.getInstance().getCurrentBalance()));
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
+        setBudgetButton.addActionListener(e -> {
+            if (e.getSource() == setBudgetButton) {
+                // Brings up window to enter a monthly budget
+                String monthlyBudget = JOptionPane.showInputDialog("What is your Monthly Budget?");
+                try {
+                    // Calls Budget class to set the monthly budget value
+                    Budget.getInstance().setMonthlyBudget(new BigDecimal(monthlyBudget));
+                    displayMonthlyBudget.setText("$" + Budget.getInstance().getMonthlyBudget());
+                    displayCurrentBalance.setText("$" + Budget.getInstance().getCurrentBalance());
+                } catch (Exception ex) {
+                    String s = ex.toString();
+                    System.out.println(s);
                 }
             }
         });
-
-        monthlyExpenseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == monthlyExpenseButton) {
-                    // Creates expense frame
-                    new ExpenseFrame(monthlyExpenseButton, expenseList, displayCurrentBalance);
-                    // Disables monthlyExpenseButton
-                    monthlyExpenseButton.setEnabled(false);
-                }
+        // creates expenseFrame and disables button
+        monthlyExpenseButton.addActionListener(e -> {
+            if (e.getSource() == monthlyExpenseButton) {
+                // Creates expense frame
+                new ExpenseFrame(monthlyExpenseButton, expenseList, displayCurrentBalance);
+                // Disables monthlyExpenseButton
+                monthlyExpenseButton.setEnabled(false);
             }
         });
-
-        addPurchaseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == addPurchaseButton) {
-                    // Creates purchase frame
-                    new PurchaseFrame(addPurchaseButton, purchaseList, displayCurrentBalance);
-                    // Disables addPurchaseButton
-                    addPurchaseButton.setEnabled(false);
-                }
+        // creates purchaseFrame and disables button
+        addPurchaseButton.addActionListener(e -> {
+            if (e.getSource() == addPurchaseButton) {
+                // Creates purchase frame
+                new PurchaseFrame(addPurchaseButton, purchaseList, displayCurrentBalance);
+                // Disables addPurchaseButton
+                addPurchaseButton.setEnabled(false);
             }
         });
-
-        newMonthButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == newMonthButton) {
-                    try {
-                        Budget.getInstance().newMonth();    // Calls newMonth method from Budget Class
-                        loadPurchaseList();
-                        displayCurrentBalance.setText("$" + String.valueOf(Budget.getInstance().getCurrentBalance()));
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
+        // Starts new month. Empties purchase list
+        newMonthButton.addActionListener(e -> {
+            if (e.getSource() == newMonthButton) {
+                try {
+                    Budget.getInstance().newMonth();    // Calls newMonth method from Budget Class
+                    loadPurchaseList();                 // Loads JList with newly emptied list
+                    displayCurrentBalance.setText("$" + Budget.getInstance().getCurrentBalance());
+                } catch (Exception ex) {
+                    String s = ex.toString();
+                    System.out.println(s);
                 }
             }
         });
     }
 
+    // populates expense JList with expense list elements
     public void loadExpenseList() {
         // Creates new list model
         DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -100,6 +88,7 @@ public class MainFrame extends JFrame {
         expenseList.setModel(listModel);
     }
 
+    // populates purchase JList with purchase list elements
     public void loadPurchaseList() {
         // Creates new list model
         DefaultListModel<String> listModel = new DefaultListModel<>();
