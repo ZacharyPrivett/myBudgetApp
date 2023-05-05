@@ -21,7 +21,6 @@ public class BudgetDatabase {
         String monthlyBudgetValue = reader.readLine();
         Budget.getInstance().setMonthlyBudget(new BigDecimal(monthlyBudgetValue));
         reader.close();
-        System.out.println("from load:" + monthlyBudgetValue + ":" );
     }
     // Loads expense values from txt file and stores it in data field
     public static void loadExpenses() throws IOException {
@@ -31,7 +30,7 @@ public class BudgetDatabase {
             int pos = line.indexOf('|');
             String name = line.substring(0,pos);
             String value = line.substring(pos+1);
-            System.out.println("From expense load :" + value + ":");
+            //System.out.println("From expense load :" + value + ":");
             Entry ent = new Entry(name, new BigDecimal(value));
             Budget.getInstance().addExpense(ent);
             line = reader.readLine();
