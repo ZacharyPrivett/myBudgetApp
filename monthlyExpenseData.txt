@@ -1,5 +1,1 @@
-phone bill|85
-Vet|45
-water|15
-electric|87
-gas|55
+f|5

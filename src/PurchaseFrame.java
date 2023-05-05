@@ -1,9 +1,5 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -22,52 +18,43 @@ public class PurchaseFrame extends JFrame {
     private JLabel removeTitle;
     private JLabel itemLabel;
     private JLabel priceLabel;
-    private JButton orig;
     private String selectedItem = "";
-    private JList<String> mainPurchaseList;
-    private JLabel balanceLabel;
+    private final JList<String> mainPurchaseList;
+    private final JLabel balanceLabel;
 
     public PurchaseFrame(JButton orig, JList<String> mainPurchaseList, JLabel balanceLabel) {
-
-        this.orig = orig;
-        this.mainPurchaseList = mainPurchaseList;
-        this.balanceLabel = balanceLabel;
+        this.mainPurchaseList = mainPurchaseList;   // purchase list from MainFrame
+        this.balanceLabel = balanceLabel;           // current balance label from MainFrame
         setContentPane(addPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
         setVisible(true);
-        loadList();
+        loadList();     // loads purchase list to JList
 
-        enterPurchaseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == enterPurchaseButton) {
-                    // Grabs values from text fields
-                    String itemName = itemField.getText();
-                    String priceValue = priceField.getText();
-                    try {
-                        // Creates new Entry and adds it to purchase list
-                        Budget.getInstance().addPurchase(new Entry(itemName, new BigDecimal(priceValue)));
-                        // Sets texts fields back to empty text fields
-                        itemField.setText("");
-                        priceField.setText("");
-                        // Populates the JList with newly added or removed values
-                        loadList();
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
+        enterPurchaseButton.addActionListener(e -> {
+            if (e.getSource() == enterPurchaseButton) {
+                // Grabs values from text fields
+                String itemName = itemField.getText();
+                String priceValue = priceField.getText();
+                try {
+                    // Creates new Entry and adds it to purchase list
+                    Budget.getInstance().addPurchase(new Entry(itemName, new BigDecimal(priceValue)));
+                    // Sets texts fields back to empty text fields
+                    itemField.setText("");
+                    priceField.setText("");
+                    // Populates the JList with newly added or removed values
+                    loadList();
+                } catch (IOException ex) {
+                    String s = ex.toString();
+                    System.out.println(s);
                 }
             }
         });
-
-        purchaseList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                selectedItem = purchaseList.getSelectedValue();
-                //System.out.println("From valueChanged :" + selectedItem);
-            }
+        // keeps track of selected item in JList
+        purchaseList.addListSelectionListener(e -> {
+            selectedItem = purchaseList.getSelectedValue();
         });
-
+        // preforms function when window is closed
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -76,33 +63,29 @@ public class PurchaseFrame extends JFrame {
                 updateBalance();            // updates current balance in MainFrame
             }
         });
-
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == removeButton) {
-                    try {
-                        Budget.getInstance().removePurchase(selectedItem);
-                        loadList();
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
+        // Removes selected item from list
+        removeButton.addActionListener(e -> {
+            if (e.getSource() == removeButton) {
+                try {
+                    Budget.getInstance().removePurchase(selectedItem);
+                    loadList(); // reloads the JList after item has been removed
+                } catch (IOException ex) {
+                    String s = ex.toString();
+                    System.out.println(s);
                 }
             }
         });
-
-        returnButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == returnButton) {
-                    dispose();              // closes window
-                    orig.setEnabled(true);  // enables purchase button in MainFrame when window closes
-                    updateBalance();        // updates current balance in MainFrame
-                }
+        // Returns to MainFrame
+        returnButton.addActionListener(e -> {
+            if (e.getSource() == returnButton) {
+                dispose();              // closes window
+                orig.setEnabled(true);  // enables purchase button in MainFrame when window closes
+                updateBalance();        // updates current balance in MainFrame
             }
         });
     }
 
+    // Loads elements to JList
     public void loadList() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         // populates JList with purchase list elements
@@ -113,8 +96,9 @@ public class PurchaseFrame extends JFrame {
         mainPurchaseList.setModel(listModel);   // sets purchase JList in MainFrame
     }
 
+    // Used to set the balance value in MainFrame after updates to purchases have been made
     public void updateBalance() {
-        balanceLabel.setText(String.valueOf(Budget.getInstance().getCurrentBalance()));
+        balanceLabel.setText("$" + Budget.getInstance().getCurrentBalance());
     }
 
     {

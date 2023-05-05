@@ -1,12 +1,7 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.math.BigDecimal;
 
 public class ExpenseFrame extends JFrame {
@@ -22,52 +17,43 @@ public class ExpenseFrame extends JFrame {
     private JButton returnButton;
     private JLabel enterTitle;
     private JLabel removeTitle;
-    private JButton orig;
     private String selectedItem = "";
-    private JList<String> mainExpenseList;
-    private JLabel balanceLabel;
+    private final JList<String> mainExpenseList;
+    private final JLabel balanceLabel;
 
     public ExpenseFrame(JButton orig, JList<String> mainExpenseList, JLabel balanceLabel) {
-
-        this.orig = orig;
-        this.mainExpenseList = mainExpenseList;
-        this.balanceLabel = balanceLabel;
+        this.mainExpenseList = mainExpenseList; // expense list from MainFrame
+        this.balanceLabel = balanceLabel;       // current balance label from MainFrame
         setContentPane(addPanel);
         setTitle("Budget Manager");
         setSize(750, 500);
         setVisible(true);
-        loadList();
+        loadList();     // loads expense list to JList
 
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == confirmButton) {
-                    // Grabs values from text fields
-                    String expenseName = expenseField.getText();
-                    String priceValue = priceField.getText();
-                    try {
-                        // Creates new Entry and adds it to expense list
-                        Budget.getInstance().addExpense(new Entry(expenseName, new BigDecimal(priceValue)));
-                        // Sets texts fields back to empty text fields
-                        expenseField.setText("");
-                        priceField.setText("");
-                        // Populates the JList with newly added or removed values
-                        loadList();
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
+        confirmButton.addActionListener(e -> {
+            if (e.getSource() == confirmButton) {
+                // Grabs values from text fields
+                String expenseName = expenseField.getText();
+                String priceValue = priceField.getText();
+                try {
+                    // Creates new Entry and adds it to expense list
+                    Budget.getInstance().addExpense(new Entry(expenseName, new BigDecimal(priceValue)));
+                    // Sets texts fields back to empty text fields
+                    expenseField.setText("");
+                    priceField.setText("");
+                    // Populates the JList with newly added or removed values
+                    loadList();
+                } catch (Exception ex) {
+                    String s = ex.toString();
+                    System.out.println(s);
                 }
             }
         });
-
-        list1.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                selectedItem = list1.getSelectedValue();
-                System.out.println("From valueChanged :" + selectedItem);
-            }
+        // keeps track of selected item in JList
+        list1.addListSelectionListener(e -> {
+            selectedItem = list1.getSelectedValue();
         });
-
+        // preforms function when window is closed
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -76,33 +62,29 @@ public class ExpenseFrame extends JFrame {
                 updateBalance();            // updates current balance in MainFrame
             }
         });
-
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == removeButton) {
-                    try {
-                        Budget.getInstance().removeExpense(selectedItem);
-                        loadList();
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
+        // Removes selected item from list
+        removeButton.addActionListener(e -> {
+            if (e.getSource() == removeButton) {
+                try {
+                    Budget.getInstance().removeExpense(selectedItem);
+                    loadList(); // reloads the JList after item has been removed
+                } catch (Exception ex) {
+                    String s = ex.toString();
+                    System.out.println(s);
                 }
             }
         });
-
-        returnButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == returnButton) {
-                    dispose();              // closes window
-                    orig.setEnabled(true);  // enables monthly expense button in MainFrame when window closes
-                    updateBalance();        // updates current balance in MainFrame
-                }
+        // Returns to MainFrame
+        returnButton.addActionListener(e -> {
+            if (e.getSource() == returnButton) {
+                dispose();              // closes window
+                orig.setEnabled(true);  // enables monthly expense button in MainFrame when window closes
+                updateBalance();        // updates current balance in MainFrame
             }
         });
     }
 
+    // Loads elements to JList
     public void loadList() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         // populates JList with expense list elements
@@ -113,6 +95,7 @@ public class ExpenseFrame extends JFrame {
         mainExpenseList.setModel(listModel);    // sets expense JList in MainFrame
     }
 
+    // Used to set the balance value in MainFrame after updates to expenses
     public void updateBalance() {
         balanceLabel.setText(String.valueOf(Budget.getInstance().getCurrentBalance()));
     }
